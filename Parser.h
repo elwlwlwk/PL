@@ -1,6 +1,10 @@
+#include <vector>
+#include <string>
+
+#include "Token.h"
 class Parser{
 private:
-	bool validate_sentence(string cmd);
+	bool validate_sentence(std::string cmd);
 public:
-	vector<Token> tokenize(string cmd);
+	std::vector<Token> tokenize(std::string cmd);
 }
