@@ -1,2 +1,5 @@
 a.out
 *.gch
+Debug
+*.vcxproj
+*.filters
