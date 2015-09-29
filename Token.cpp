@@ -1,6 +1,11 @@
 #include "Token.h"
-Token::Token(std::string type, std::string val) :type(type), val(val) {
+
+Token::Token(std::string type, std::string val) :type(type), val(val),var_val(val) {
 }
+
+Token::Token(std::string type, std::string val, std::string var_val) : type(type), val(val), var_val(var_val) {
+}
+
 std::string Token::get_val() {
 	return this->val;
 }

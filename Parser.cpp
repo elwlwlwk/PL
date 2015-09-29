@@ -1,3 +1,5 @@
+#include <regex>
+
 #include "Parser.h"
 bool Parser::validate_sentence(std::string cmd) {
 	return true;
@@ -35,8 +37,23 @@ std::vector<std::string> Parser::str_tok(std::string str, std::string delimiters
 std::vector<Token> Parser::analyzer(std::vector<std::string> v_cmd) {
 	std::vector<Token> v_tok;
 	for (int i = 0; i< v_cmd.size(); i++) {
-		if (v_cmd[i].compare("add")== 0){
-			v_tok.push_back (Token("operator", "add"));
+		if (std::regex_search(v_cmd[i], std::regex("(equ|add|sub|mul|div|pow|nrt|exp|ln|sin|cos)"))){
+			v_tok.push_back (Token("operator", v_cmd[i]));
+		}
+		else if (std::regex_search(v_cmd[i], std::regex("^-?[0-9]+$"))) {
+			v_tok.push_back(Token("integer", v_cmd[i]));
+		}
+		else if (std::regex_search(v_cmd[i], std::regex("^-?[0-9]+\\.[0-9]+$"))) {
+			v_tok.push_back(Token("float", v_cmd[i]));
+		}
+		else if (std::regex_search(v_cmd[i], std::regex("\\("))) {
+			v_tok.push_back(Token("l_paren", v_cmd[i]));
+		}
+		else if (std::regex_search(v_cmd[i], std::regex("\\)"))) {
+			v_tok.push_back(Token("r_paren", v_cmd[i]));
+		}
+		else if (std::regex_search(v_cmd[i], std::regex("^_*[a-z_]+[a-z0-_]*$"))) {
+			v_tok.push_back(Token("variable", v_cmd[i]));
 		}
 		else {
 			v_tok.push_back(Token("unknown", v_cmd[i]));
