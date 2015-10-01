@@ -12,3 +12,7 @@ std::string Token::get_val() {
 std::string Token::get_type() {
 	return this->type;
 }
+
+std::string Token::get_var_val() {
+	return this->var_val;
+}

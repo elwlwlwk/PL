@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Token.h"
+
 class Parser {
 private:
 	bool validate_sentence(std::string cmd);

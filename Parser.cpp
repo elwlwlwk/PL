@@ -1,6 +1,8 @@
 #include <regex>
 
 #include "Parser.h"
+#include "Grammer.h"
+
 bool Parser::validate_sentence(std::string cmd) {
 	return true;
 }
@@ -36,23 +38,24 @@ std::vector<std::string> Parser::str_tok(std::string str, std::string delimiters
 
 std::vector<Token> Parser::analyzer(std::vector<std::string> v_cmd) {
 	std::vector<Token> v_tok;
+	Grammer grammer= Grammer();
 	for (int i = 0; i< v_cmd.size(); i++) {
-		if (std::regex_search(v_cmd[i], std::regex("(equ|add|sub|mul|div|pow|nrt|exp|ln|sin|cos)"))){
+		if (std::regex_search(v_cmd[i], grammer.get_operator_regex())){
 			v_tok.push_back (Token("operator", v_cmd[i]));
 		}
-		else if (std::regex_search(v_cmd[i], std::regex("^-?[0-9]+$"))) {
+		else if (std::regex_search(v_cmd[i], grammer.get_integer_regex())) {
 			v_tok.push_back(Token("integer", v_cmd[i]));
 		}
-		else if (std::regex_search(v_cmd[i], std::regex("^-?[0-9]+\\.[0-9]+$"))) {
+		else if (std::regex_search(v_cmd[i], grammer.get_float_regex())) {
 			v_tok.push_back(Token("float", v_cmd[i]));
 		}
-		else if (std::regex_search(v_cmd[i], std::regex("\\("))) {
+		else if (std::regex_search(v_cmd[i], grammer.get_l_paren_regex())) {
 			v_tok.push_back(Token("l_paren", v_cmd[i]));
 		}
-		else if (std::regex_search(v_cmd[i], std::regex("\\)"))) {
+		else if (std::regex_search(v_cmd[i], grammer.get_r_paren_regex())) {
 			v_tok.push_back(Token("r_paren", v_cmd[i]));
 		}
-		else if (std::regex_search(v_cmd[i], std::regex("^_*[a-z_]+[a-z0-_]*$"))) {
+		else if (std::regex_search(v_cmd[i], grammer.get_variable_regex())) {
 			v_tok.push_back(Token("variable", v_cmd[i]));
 		}
 		else {
