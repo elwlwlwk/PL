@@ -58,6 +58,10 @@ std::vector<Token> Parser::analyzer(std::vector<std::string> v_cmd) {
 		else if (std::regex_search(v_cmd[i], grammer.get_variable_regex())) {
 			v_tok.push_back(Token("variable", v_cmd[i]));
 		}
+		else if (std::regex_search(v_cmd[i], grammer.get_string_regex())) {
+			v_cmd[i]= v_cmd[i].substr(1, v_cmd[i].length() - 2);
+			v_tok.push_back(Token("string", v_cmd[i]));
+		}
 		else {
 			v_tok.push_back(Token("unknown", v_cmd[i]));
 		}

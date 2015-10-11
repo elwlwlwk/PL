@@ -23,6 +23,17 @@ private:
 	Token exe_ln(Token l_t);
 	Token exe_sin(Token l_t);
 	Token exe_cos(Token l_t);
+	Token exe_int(Token l_t);
+	Token exe_float(Token l_t);
+	Token exe_is(Token l_t, Token r_t);
+	Token exe_gt(Token l_t, Token r_t);
+	Token exe_lt(Token l_t, Token r_t);
+	Token exe_if(Token stat, Token l_t, Token r_t);
+	Token exe_print(Token l_t);
+	Token exe_reset();
+	Token exe_type(Token l_t);
+	Token exe_tostring(Token l_t);
+	Token exe_tovalue(Token l_t);
 public:
 	Token process(std::vector<Token> v_token);
 };

@@ -1,8 +1,10 @@
 #include <regex>
 #include <algorithm>
 #include <math.h>
+#include <iostream>
 
 #include "Interpreter.h"
+#include "Grammer.h"
 
 Token Interpreter::replace_variable(Token tok) {
 	Token result = tok;
@@ -70,6 +72,39 @@ Token Interpreter::execute(std::vector<Token> v_token) {
 	}
 	else if (v_token[0].get_val().compare("cos") == 0) {
 		return exe_cos(v_token[1]);
+	}
+	else if (v_token[0].get_val().compare("int") == 0) {
+		return exe_int(v_token[1]);
+	}
+	else if (v_token[0].get_val().compare("float") == 0) {
+		return exe_float(v_token[1]);
+	}
+	else if (v_token[0].get_val().compare("is") == 0) {
+		return exe_is(v_token[1], v_token[2]);
+	}
+	else if (v_token[0].get_val().compare("gt") == 0) {
+		return exe_gt(v_token[1], v_token[2]);
+	}
+	else if (v_token[0].get_val().compare("lt") == 0) {
+		return exe_lt(v_token[1], v_token[2]);
+	}
+	else if (v_token[0].get_val().compare("if") == 0) {
+		return exe_if(v_token[1], v_token[2], v_token[3]);
+	}
+	else if (v_token[0].get_val().compare("print") == 0) {
+		return exe_print(v_token[1]);
+	}
+	else if (v_token[0].get_val().compare("reset") == 0) {
+		return exe_reset();
+	}
+	else if (v_token[0].get_val().compare("type") == 0) {
+		return exe_type(v_token[1]);
+	}
+	else if (v_token[0].get_val().compare("tostring") == 0) {
+		return exe_tostring(v_token[1]);
+	}
+	else if (v_token[0].get_val().compare("tovalue") == 0) {
+		return exe_tovalue(v_token[1]);
 	}
 	return Token();
 }
@@ -153,4 +188,86 @@ Token Interpreter::exe_sin(Token l_t) {
 Token Interpreter::exe_cos(Token l_t) {
 	l_t = replace_variable(l_t);
 	return Token("float", std::to_string(std::cos(atof(l_t.get_val().c_str()) / 180 * (std::atan(1) * 4))));
+}
+Token Interpreter::exe_int(Token l_t) {
+	l_t = replace_variable(l_t);
+	if (l_t.get_type().compare("float") == 0) {
+		return Token("integer", std::to_string((int)atof(l_t.get_val().c_str())));
+	}
+	return l_t;
+}
+Token Interpreter::exe_float(Token l_t) {
+	l_t = replace_variable(l_t);
+	if (l_t.get_type().compare("integer") == 0) {
+		return Token("float", l_t.get_val());
+	}
+	return l_t;
+}
+Token Interpreter::exe_is(Token l_t, Token r_t) {
+	l_t = replace_variable(l_t);
+	r_t = replace_variable(r_t);
+	if (l_t.get_type().compare(r_t.get_type()) == 0 && l_t.get_val().compare(r_t.get_val())== 0) {
+		return Token("integer", "1");
+	}
+	else {
+		return Token("integer", "0");
+	}
+}
+Token Interpreter::exe_gt(Token l_t, Token r_t) {
+	l_t = replace_variable(l_t);
+	r_t = replace_variable(r_t);
+	if (atof(l_t.get_val().c_str())> atof(r_t.get_val().c_str())) {
+		return Token("integer", "1");
+	}
+	else {
+		return Token("integer", "0");
+	}
+}
+Token Interpreter::exe_lt(Token l_t, Token r_t) {
+	l_t = replace_variable(l_t);
+	r_t = replace_variable(r_t);
+	if (atof(l_t.get_val().c_str())< atof(r_t.get_val().c_str())) {
+		return Token("integer", "1");
+	}
+	else {
+		return Token("integer", "0");
+	}
+}
+Token Interpreter::exe_if(Token stat, Token l_t, Token r_t) {
+	l_t = replace_variable(l_t);
+	r_t = replace_variable(r_t);
+	if (atoi(stat.get_val().c_str())== 1) {
+		return l_t;
+	}
+	else {
+		return r_t;
+	}
+}
+Token Interpreter::exe_print(Token l_t) {
+	l_t = replace_variable(l_t);
+	std::cout << l_t.get_val() << std::endl;
+	return l_t;
+}
+Token Interpreter::exe_reset() {
+	m_variables.clear();
+	return Token("integer", "0");
+}
+Token Interpreter::exe_type(Token l_t) {
+	l_t = replace_variable(l_t);
+	return Token("string", l_t.get_type());
+}
+Token Interpreter::exe_tostring(Token l_t) {
+	l_t = replace_variable(l_t);
+	return Token("string", l_t.get_val());
+}
+Token Interpreter::exe_tovalue(Token l_t) {
+	Grammer grammer;
+	l_t = replace_variable(l_t);
+	if (std::regex_search(l_t.get_val(), grammer.get_float_regex())) {
+		return Token("float", l_t.get_val());
+	}
+	else if (std::regex_search(l_t.get_val(), grammer.get_integer_regex())) {
+		return Token("integer", l_t.get_val());
+	}
+	return Token();
 }
